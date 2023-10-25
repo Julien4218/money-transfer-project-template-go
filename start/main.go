@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 
+	"github.com/google/uuid"
 	"go.temporal.io/sdk/client"
 
 	"money-transfer-project-template-go/app"
@@ -11,6 +13,14 @@ import (
 
 // @@@SNIPSTART money-transfer-project-template-go-start-workflow
 func main() {
+	sourceAccount := "85-150"
+	targetAccount := "43-812"
+	if len(os.Args) > 1 {
+		sourceAccount = os.Args[1]
+		if len(os.Args) > 2 {
+			targetAccount = os.Args[2]
+		}
+	}
 	// Create the client object just once per process
 	c, err := client.Dial(client.Options{})
 
@@ -21,14 +31,15 @@ func main() {
 	defer c.Close()
 
 	input := app.PaymentDetails{
-		SourceAccount: "85-150",
-		TargetAccount: "43-812",
+		SourceAccount: sourceAccount,
+		TargetAccount: targetAccount,
 		Amount:        250,
 		ReferenceID:   "12345",
 	}
 
+	id, _ := uuid.NewRandom()
 	options := client.StartWorkflowOptions{
-		ID:        "pay-invoice-701",
+		ID:        "pay-invoice-" + id.String(),
 		TaskQueue: app.MoneyTransferTaskQueueName,
 	}
 
@@ -41,15 +52,15 @@ func main() {
 
 	log.Printf("WorkflowID: %s RunID: %s\n", we.GetID(), we.GetRunID())
 
-	var result string
+	// var result string
 
-	err = we.Get(context.Background(), &result)
+	// err = we.Get(context.Background(), &result)
 
-	if err != nil {
-		log.Fatalln("Unable to get Workflow result:", err)
-	}
+	// if err != nil {
+	// 	log.Fatalln("Unable to get Workflow result:", err)
+	// }
 
-	log.Println(result)
+	// log.Println(result)
 }
 
 // @@@SNIPEND

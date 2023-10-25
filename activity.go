@@ -4,14 +4,22 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 )
 
 // @@@SNIPSTART money-transfer-project-template-go-activity-withdraw
 func Withdraw(ctx context.Context, data PaymentDetails) (string, error) {
+	txn := NrApp.StartTransaction("Withdraw")
+	defer txn.End()
+
 	log.Printf("Withdrawing $%d from account %s.\n\n",
 		data.Amount,
 		data.SourceAccount,
 	)
+
+	log.Printf("Waiting 50 seconds...")
+	time.Sleep(50 * time.Second)
+	log.Printf("Waiting done")
 
 	referenceID := fmt.Sprintf("%s-withdrawal", data.ReferenceID)
 	bank := BankingService{"bank-api.example.com"}
@@ -23,6 +31,8 @@ func Withdraw(ctx context.Context, data PaymentDetails) (string, error) {
 
 // @@@SNIPSTART money-transfer-project-template-go-activity-deposit
 func Deposit(ctx context.Context, data PaymentDetails) (string, error) {
+	txn := NrApp.StartTransaction("Deposit")
+	defer txn.End()
 	log.Printf("Depositing $%d into account %s.\n\n",
 		data.Amount,
 		data.TargetAccount,
@@ -40,6 +50,8 @@ func Deposit(ctx context.Context, data PaymentDetails) (string, error) {
 
 // @@@SNIPSTART money-transfer-project-template-go-activity-refund
 func Refund(ctx context.Context, data PaymentDetails) (string, error) {
+	txn := NrApp.StartTransaction("Refund")
+	defer txn.End()
 	log.Printf("Refunding $%v back into account %v.\n\n",
 		data.Amount,
 		data.SourceAccount,

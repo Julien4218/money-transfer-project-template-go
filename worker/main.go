@@ -2,15 +2,23 @@ package main
 
 import (
 	"log"
+	"money-transfer-project-template-go/app"
+	"os"
 
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/worker"
 
-	"money-transfer-project-template-go/app"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 // @@@SNIPSTART money-transfer-project-template-go-worker
 func main() {
+	licenseKey := os.Getenv("NEW_RELIC_LICENSE_KEY")
+	app.NrApp, _ = newrelic.NewApplication(
+		newrelic.ConfigAppName("temporal-money-transfer"),
+		newrelic.ConfigLicense(licenseKey),
+		newrelic.ConfigAppLogForwardingEnabled(true),
+	)
 
 	c, err := client.Dial(client.Options{})
 	if err != nil {

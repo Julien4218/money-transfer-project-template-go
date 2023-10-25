@@ -10,6 +10,8 @@ import (
 
 // @@@SNIPSTART money-transfer-project-template-go-workflow
 func MoneyTransfer(ctx workflow.Context, input PaymentDetails) (string, error) {
+	txn := NrApp.StartTransaction("MoneyTransfer")
+	defer txn.End()
 
 	// RetryPolicy specifies how to automatically handle retries if an Activity fails.
 	retrypolicy := &temporal.RetryPolicy{

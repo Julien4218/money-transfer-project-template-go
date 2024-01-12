@@ -21,13 +21,11 @@ func main() {
 			targetAccount = os.Args[2]
 		}
 	}
-	// Create the client object just once per process
-	c, err := client.Dial(client.Options{})
 
+	c, err := app.GetTemporalClient()
 	if err != nil {
 		log.Fatalln("Unable to create Temporal client:", err)
 	}
-
 	defer c.Close()
 
 	input := app.PaymentDetails{

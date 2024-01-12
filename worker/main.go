@@ -23,7 +23,7 @@ func main() {
 	if err != nil {
 		log.Fatalln("Unable to create Temporal client:", err)
 	}
-	defer (*c).Close()
+	defer c.Close()
 
 	w := worker.New(c, app.MoneyTransferTaskQueueName, worker.Options{})
 
